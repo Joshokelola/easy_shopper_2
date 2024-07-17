@@ -1,4 +1,5 @@
 import 'package:easy_shopper/controller/cart_bloc/bloc/cart_bloc.dart';
+import 'package:easy_shopper/core/icons/easy_shopper_icons.dart';
 import 'package:easy_shopper/model/t_product.dart';
 import 'package:easy_shopper/views/widgets/collections_widget.dart';
 import 'package:easy_shopper/views/widgets/deals_widget.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/product_bloc/products_bloc.dart';
+import 'profile_page.dart';
+import 'wishlist_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +20,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+ 
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +30,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+   
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -175,7 +181,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-           const SizedBox(
+          const SizedBox(
             height: 20,
           ),
           const DealsWidget(),
@@ -214,6 +220,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
+     
     );
   }
 }

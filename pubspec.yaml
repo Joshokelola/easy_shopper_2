@@ -111,6 +111,9 @@ flutter:
     - family: Redressed
       fonts:
         - asset: fonts/Redressed-Regular.ttf
+    - family: EasyShopper
+      fonts:
+        - asset: fonts/EasyShopper.ttf
   
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

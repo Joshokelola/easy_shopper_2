@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'core/icons/easy_shopper_icons.dart';
+import 'views/pages/profile_page.dart';
+import 'views/pages/wishlist_page.dart';
+
 Future<void> main() async {
   await dotenv.load(fileName: ".env");
   Bloc.observer = const GetProductsBlocObserver();
@@ -39,8 +43,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      const HomePage(),
+      const WishListPage(),
+      const ProfilePage(),
+    ];
     return MaterialApp(
       title: 'Sharrie\'s Signature',
       theme: ThemeData(
@@ -49,7 +66,22 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const HomePage(),
+      home: Scaffold(
+        body:  pages[_selectedIndex],
+         bottomNavigationBar: BottomNavigationBar(
+        items: const [
+          BottomNavigationBarItem(icon: Icon(EasyShopper.home), label: 'Home'),
+          BottomNavigationBarItem(
+              icon: Icon(EasyShopper.vector), label: 'Wishlist'),
+          BottomNavigationBarItem(
+              icon: Icon(EasyShopper.user), label: 'Profile'),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: const Color(0xff1F2223),
+        unselectedItemColor: const Color(0xff9F9C9C),
+        onTap: _onItemTapped,
+      ),
+      ),
     );
   }
 }

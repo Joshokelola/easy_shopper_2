@@ -46,6 +46,7 @@ class ShoppingCartPage extends StatelessWidget {
             }
             return ShoppingCartActive(
               items: state.items,
+              totalPrice: state.totalPrice.toInt(),
             );
           }
           return Container();
@@ -57,7 +58,9 @@ class ShoppingCartPage extends StatelessWidget {
 
 class ShoppingCartActive extends StatelessWidget {
   final List<Items> items;
-  const ShoppingCartActive({super.key, required this.items});
+  final int totalPrice;
+  const ShoppingCartActive(
+      {super.key, required this.items, required this.totalPrice});
 
   @override
   Widget build(BuildContext context) {
@@ -179,14 +182,170 @@ class ShoppingCartActive extends StatelessWidget {
           ),
           Container(
             height: 335,
-            width: 290,
+            width: 380,
             decoration: BoxDecoration(
                 border: Border.all(
                   color: const Color(0xff408C2B),
                   width: 1,
                 ),
                 borderRadius: BorderRadius.circular(12)),
-                child: Text(''),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 40,
+                ),
+                const Text(
+                  'Cart Summary',
+                  style: TextStyle(
+                    fontFamily: 'Lora',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Sub-total',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 60,
+                    ),
+                    Text(
+                      NumberFormat.currency(locale: 'en_NG', symbol: '₦')
+                          .format(totalPrice),
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: const Color(0xff6E6E6E),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Delivery',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 60,
+                    ),
+                    Text(
+                      '₦5,000.00',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: const Color(0xff6E6E6E),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const Divider(
+                  height: 1,
+                  color: Color(0xffCCCBCB),
+                  indent: 13.5,
+                  endIndent: 13.5,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () {
+                        context.read<CartBloc>().add(ClearCart());
+                      },
+                      child: Container(
+                          width: 63,
+                          height: 48,
+                          padding: const EdgeInsets.symmetric(horizontal: 8),
+                          decoration: BoxDecoration(
+                              border:
+                                  Border.all(color: const Color(0xff363939)),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: const Align(
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Poppins',
+                                    color: Color(0xff363939)),
+                              ))),
+                    ),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Total amount',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xff797A7B),
+                          ),
+                        ),
+                        Text(
+                          NumberFormat.currency(locale: 'en_NG', symbol: '₦')
+                              .format((totalPrice + 5000)),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color: const Color(0xff363939), fontSize: 18),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 40,
+                    ),
+                    Container(
+                      width: 95,
+                      height: 48,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
+                          color: Color(0xff408C2B)),
+                      child: const Center(
+                        child: Text(
+                          'Checkout',
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'Poppins',
+                              color: Color(0xffFAFAFA)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           )
         ],
       ),
@@ -271,6 +430,9 @@ class ShoppingCartEmpty extends StatelessWidget {
         // crossAxisAlignment: CrossAxisAlignment.center,
         // mainAxisSize: MainAxisSize.min,
         children: [
+          const SizedBox(
+            height: 80,
+          ),
           Image.asset(
             './assets/shopping-cart.png',
             height: 64,
