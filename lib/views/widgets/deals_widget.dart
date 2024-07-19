@@ -1,17 +1,12 @@
-import 'package:easy_shopper/views/widgets/product_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../controller/product_bloc/products_bloc.dart';
+import 'product_widget.dart';
 
-class DealsWidget extends StatefulWidget {
+class DealsWidget extends StatelessWidget {
   const DealsWidget({super.key});
 
-  @override
-  State<DealsWidget> createState() => _DealsWidgetState();
-}
-
-class _DealsWidgetState extends State<DealsWidget> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProductsBloc, ProductsState>(
@@ -26,22 +21,28 @@ class _DealsWidgetState extends State<DealsWidget> {
         }
         if (state is ProductsLoaded) {
           return Container(
-            margin: const EdgeInsets.only(left: 40, right: 10),
-            height: 724,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: state.product.sublist(3, 9).length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.78,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-              ),
-              itemBuilder: (context, index) {
-                return ProductItemWidget(
-                
-                  productIndex: index,
-                  items: state.product.sublist(3, 9),
+            margin: const EdgeInsets.only(left: 30, right: 10),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final isWideScreen = constraints.maxWidth >= 479;
+                return SizedBox(
+                  height: 800,
+                  child: GridView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: state.product.sublist(3, 9).length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount:  2,
+                      childAspectRatio: 0.78,
+                      crossAxisSpacing: isWideScreen ? 16 : 4,
+                      mainAxisSpacing: isWideScreen ? 16 : 4,
+                    ),
+                    itemBuilder: (context, index) {
+                      var newProductsList = state.product.sublist(7, 18);
+                      return ProductItemWidget(
+                        item: newProductsList[index],
+                      );
+                    },
+                  ),
                 );
               },
             ),

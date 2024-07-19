@@ -1,8 +1,8 @@
-
-import 'package:easy_shopper/views/widgets/shopping_cart_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+import 'package:easy_shopper/views/widgets/shopping_cart_widget.dart';
 
 import '../../controller/cart_bloc/bloc/cart_bloc.dart';
 import '../../model/t_product.dart';
@@ -10,13 +10,11 @@ import '../../model/t_product.dart';
 enum ProductDetailsState { Initial, AddedToCart }
 
 class ProductDetailsPage extends StatefulWidget {
-  final List<Items> products;
-  final int productIndex;
+  final Items item;
   const ProductDetailsPage({
-    super.key,
-    required this.products,
-    required this.productIndex,
-  });
+    Key? key,
+    required this.item,
+  }) : super(key: key);
 
   @override
   State<ProductDetailsPage> createState() => _ProductDetailsPageState();
@@ -27,7 +25,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final product = widget.products[widget.productIndex];
+    //final product = widget.products[widget.productIndex];
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -49,8 +47,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
           )
         ],
       ),
-      body: _buildContent(product),
-      bottomNavigationBar: _buildBottomBar(product),
+      body: _buildContent(widget.item),
+      bottomNavigationBar: _buildBottomBar(widget.item),
     );
   }
 
@@ -65,7 +63,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               image: DecorationImage(
                   fit: BoxFit.fitWidth,
                   image: NetworkImage(
-                      'https://api.timbu.cloud/images/${widget.products[widget.productIndex].imageUrl}'))),
+                      'https://api.timbu.cloud/images/${product.imageUrl}'))),
         ),
         const SizedBox(
           height: 63,
@@ -76,7 +74,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                widget.products[widget.productIndex].uniqueId!,
+                product.uniqueId!,
                 style: const TextStyle(
                     fontSize: 16,
                     color: Color(0xff6E6E6E),
@@ -91,6 +89,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Poppins'),
               ),
+
+              
             ],
           ),
         ),
@@ -100,7 +100,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         Container(
           margin: const EdgeInsets.only(left: 40, right: 40),
           child: Text(
-            widget.products[widget.productIndex].name!,
+            product.name!,
             style: const TextStyle(
                 fontSize: 24,
                 color: Color(0xff0A0B0A),
@@ -114,7 +114,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         Container(
           margin: const EdgeInsets.only(left: 40, right: 40),
           child: Text(
-            widget.products[widget.productIndex].description!,
+            product.description!,
             style: const TextStyle(
               fontSize: 14,
               color: Color(0xff5A5A5A),
@@ -139,8 +139,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                NumberFormat.currency(locale: 'en_NG', symbol: '₦')
-                    .format(double.parse(product.currentPrice!)),
+                NumberFormat.currency(locale: 'en_US', symbol: '\$').format(
+                (  double.parse(product.currentPrice!)) / 1000,
+                ),
                 style: Theme.of(context)
                     .textTheme
                     .titleMedium!
@@ -148,9 +149,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               ),
               InkWell(
                 onTap: () {
-                context
-                            .read<CartBloc>()
-                            .add(AddItem(product));
+                  context.read<CartBloc>().add(AddItem(product));
                   setState(() {
                     _state = ProductDetailsState.AddedToCart;
                   });
@@ -187,9 +186,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             children: [
               InkWell(
                 onTap: () {
-                  context
-                            .read<CartBloc>()
-                            .add(RemoveItem(product));
+                  context.read<CartBloc>().add(RemoveItem(product));
                   setState(() {
                     _state = ProductDetailsState.Initial;
                   });
@@ -208,11 +205,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               const SizedBox(
                 width: 40,
               ),
-               Column(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                 const  Text(
+                  const Text(
                     'Unit Price',
                     style: TextStyle(
                       fontFamily: 'Poppins',
@@ -222,12 +219,14 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                   ),
                   Text(
-                     NumberFormat.currency(locale: 'en_NG', symbol: '₦')
-                    .format(double.parse(product.currentPrice!)),
-                     style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: const Color(0xff363939), fontSize: 18),
+                 NumberFormat.currency(
+                                      locale: 'en_US', symbol: '\$')
+                                  .format(
+                              (  double.parse(product.currentPrice!) / 1000),),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium!
+                        .copyWith(color: const Color(0xff363939), fontSize: 18),
                   )
                 ],
               ),

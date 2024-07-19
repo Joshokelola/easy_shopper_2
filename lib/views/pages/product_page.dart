@@ -41,7 +41,14 @@ class _ProductsPageState extends State<ProductsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.network(
-                        'https://api.timbu.cloud/images/${state.product[index].imageUrl}'),
+                      'https://api.timbu.cloud/images/${state.product[index].imageUrl}',
+                      loadingBuilder: (context, child, loadingProgress) {
+                        return const CircularProgressIndicator();
+                      },
+                      errorBuilder: (context, error, stackTrace) {
+                        return const Placeholder();
+                      },
+                    ),
                     const SizedBox(
                       height: 10,
                     ),
@@ -50,9 +57,9 @@ class _ProductsPageState extends State<ProductsPage> {
                       height: 10,
                     ),
                     Text(
-                      NumberFormat.currency(locale: 'en_NG', symbol: '₦')
+                      NumberFormat.currency(locale: 'en_US', symbol: '\$')
                           .format(
-                              double.parse(state.product[index].currentPrice!)),
+                              double.parse(state.product[index].currentPrice!) / 1000),
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(

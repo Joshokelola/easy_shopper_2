@@ -23,3 +23,11 @@ final class CartError extends CartState {
 
   CartError(this.errorMsg);
 }
+final class CartOrderSuccessful extends CartState{
+  final Items items;
+  final int totalItems;
+  final double totalPrice;
+
+  CartOrderSuccessful(this.items, this.totalItems, this.totalPrice);
+  
+}

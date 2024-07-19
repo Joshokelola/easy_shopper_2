@@ -1,5 +1,6 @@
 
 import 'package:dio/dio.dart';
+import 'package:easy_shopper/model/product_category.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:fpdart/fpdart.dart';
@@ -37,6 +38,7 @@ class GetProductsRepoImpl implements GetProductRepo {
           isAvailable: e['isAvailable'],
           imageUrl: e['photos'][0]['url'],
           currentPrice: e['current_price'][0]['NGN'][0].truncate().toString(),
+          category: ProductCategory(id: e['categories'][0]['id'], productCategoryName: e['categories'][0]['name'])
         );
       }).toList();
       // debugPrint(items.map((e) {

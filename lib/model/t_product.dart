@@ -1,6 +1,9 @@
-import 'dart:convert';
+import 'package:easy_shopper/model/product_category.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 't_product.g.dart';
 
+@JsonSerializable()
 class Items {
   final String id;
   final String? name;
@@ -11,6 +14,9 @@ class Items {
   final String? imageUrl;
   final String? currentPrice;
   final int quantity;
+  final bool isInWishList;
+  
+  final ProductCategory category;
 
   Items({
     required this.id,
@@ -20,52 +26,28 @@ class Items {
     required this.isAvailable,
     required this.imageUrl,
     required this.currentPrice,
+    required this.category,
     this.quantity = 1,
+    this.isInWishList = false,
   });
 
   @override
   String toString() {
-    return 'Items(id: $id name: $name, description: $description, uniqueId: $uniqueId, isAvailable: $isAvailable, imageUrl: $imageUrl, currentPrice: $currentPrice)';
+    return 'Items(id: $id name: $name, description: $description, uniqueId: $uniqueId, isAvailable: $isAvailable, imageUrl: $imageUrl, currentPrice: $currentPrice, quantity: $quantity, isInWishlist: $isInWishList, category: $category)';
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'description': description,
-      'uniqueId': uniqueId,
-      'isAvailable': isAvailable,
-      'imageUrl': imageUrl,
-      'currentPrice': currentPrice,
-    };
-  }
-
-  factory Items.fromMap(Map<String, dynamic> map) {
-    return Items(
-      id: map['id'],
-      name: map['name'],
-      description: map['description'],
-      uniqueId: map['uniqueId'],
-      isAvailable: map['isAvailable'],
-      imageUrl: map['photos'][0]['url'],
-      currentPrice: map['current_price'][0]['NGN'][0].toString(),
-      // quantity: 1,
-    );
-  }
-
-  String toJson() => json.encode(toMap());
-
-  factory Items.fromJson(String source) => Items.fromMap(json.decode(source));
-
-  Items copyWith({
-    String? id,
-    String? name,
-    String? description,
-    String? uniqueId,
-    bool? isAvailable,
-    String? imageUrl,
-    String? currentPrice,
-    int? quantity,
-  }) {
+  Items copyWith(
+      {String? id,
+      String? name,
+      String? description,
+      String? uniqueId,
+      bool? isAvailable,
+      String? imageUrl,
+      String? currentPrice,
+      int? quantity,
+      bool? isInWishList,
+      ProductCategory? category,
+      }) {
     return Items(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -75,6 +57,12 @@ class Items {
       imageUrl: imageUrl ?? this.imageUrl,
       currentPrice: currentPrice ?? this.currentPrice,
       quantity: quantity ?? this.quantity,
+      isInWishList: isInWishList ?? this.isInWishList,
+      category: category ?? this.category
     );
   }
+
+  factory Items.fromJson(Map<String, dynamic> json) => _$ItemsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ItemsToJson(this);
 }

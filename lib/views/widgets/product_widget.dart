@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
+import 'package:easy_shopper/controller/product_bloc/products_bloc.dart';
 import 'package:easy_shopper/model/t_product.dart';
 import 'package:easy_shopper/views/pages/details_page.dart';
 
 import '../../controller/cart_bloc/bloc/cart_bloc.dart';
 
 class ProductItemWidget extends StatelessWidget {
-  final int productIndex;
-  final List<Items> items;
+  final Items item;
   //Function addToCart;
   const ProductItemWidget({
-    super.key,
-    required this.productIndex,
-    required this.items,
+    Key? key,
     //required this.addToCart,
-  });
+    required this.item,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +26,7 @@ class ProductItemWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) {
               return ProductDetailsPage(
-                products: items,
-                productIndex: productIndex,
+                item: item,
               );
             },
           ),
@@ -41,17 +39,42 @@ class ProductItemWidget extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.45),
-                  border:
-                      Border.all(color: const Color(0xffE3E3E3), width: 0.3),
-                  image: DecorationImage(
-                    fit: BoxFit.fitWidth,
-                    image: NetworkImage(
-                        'https://api.timbu.cloud/images/${items[productIndex].imageUrl}'),
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.45),
+                      border: Border.all(
+                          color: const Color(0xffE3E3E3), width: 0.3),
+                      image: DecorationImage(
+                        fit: BoxFit.fitWidth,
+                        image: NetworkImage(
+                            'https://api.timbu.cloud/images/${item.imageUrl}'),
+                      ),
+                    ),
                   ),
-                ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      onPressed: () {
+                        context
+                            .read<ProductsBloc>()
+                            .add(AddProductToWishlist(item));
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('${item.name!} ${item.isInWishList!
+                          ? 'removed from wishlist' : 'added to wishlist'}.'),
+                        ));
+                      },
+                      icon: item.isInWishList
+                          ? const Tooltip(
+                            message: 'Remove from wishlist',
+                            child:  Icon(Icons.favorite))
+                          :const Tooltip(
+                            message: 'Add  to wishlist',
+                            child:  Icon(Icons.favorite_outline)),
+                    ),
+                  )
+                ],
               ),
             ),
             const SizedBox(
@@ -66,7 +89,7 @@ class ProductItemWidget extends StatelessWidget {
                     SizedBox(
                       width: 100,
                       child: Text(
-                        items[productIndex].name!,
+                        item.name!,
                         style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xff797A7B),
@@ -75,9 +98,10 @@ class ProductItemWidget extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      NumberFormat.currency(locale: 'en_NG', symbol: '₦')
-                          .format(
-                              double.parse(items[productIndex].currentPrice!)),
+                        NumberFormat.currency(
+                                      locale: 'en_US', symbol: '\$')
+                                  .format(
+                              (  double.parse(item.currentPrice!) / 1000),),
                       style: const TextStyle(
                         fontSize: 14,
                         color: Color(0xff363939),
@@ -91,9 +115,10 @@ class ProductItemWidget extends StatelessWidget {
                     return InkWell(
                       onTap: () {
                         // debugPrint(state.items.toString());
-                        context
-                            .read<CartBloc>()
-                            .add(AddItem(items[productIndex]));
+                        context.read<CartBloc>().add(AddItem(item));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('${item.name!} added to cart.'),
+                        ));
                       },
                       child: Container(
                         width: 66,

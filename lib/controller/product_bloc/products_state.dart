@@ -14,4 +14,5 @@ final class ProductsLoaded extends ProductsState {
 final class ProductsError extends ProductsState {
   final String error;
   ProductsError(this.error);
+  
 }

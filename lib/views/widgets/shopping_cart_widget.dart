@@ -24,17 +24,21 @@ class ShoppingCartWidget extends StatelessWidget {
           );
         }
         if (state is CartLoaded ) {
-          return InkWell(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (_) {
-                return const Dialog.fullscreen(
-                  child: ShoppingCartPage(),
-                );
-              }));
-            },
-            child: Badge(
-              label: Text('${state.items.length}'),
-              child: const Icon(Icons.shopping_cart_outlined),
+          return Tooltip(
+            message: 'Shopping Cart',
+            child: InkWell(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  return const Dialog.fullscreen(
+                    child: ShoppingCartPage(),
+                  );
+                }));
+              },
+              child: Badge(
+                
+                label: Text('${state.items.length}'),
+                child: const Icon(Icons.shopping_cart_outlined),
+              ),
             ),
           );
         }

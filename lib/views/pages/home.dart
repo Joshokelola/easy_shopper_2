@@ -1,16 +1,15 @@
-import 'package:easy_shopper/controller/cart_bloc/bloc/cart_bloc.dart';
-import 'package:easy_shopper/core/icons/easy_shopper_icons.dart';
-import 'package:easy_shopper/model/t_product.dart';
+import 'package:easy_shopper/views/pages/allproducts_page.dart';
+import 'package:easy_shopper/views/pages/order_history_page.dart';
 import 'package:easy_shopper/views/widgets/collections_widget.dart';
 import 'package:easy_shopper/views/widgets/deals_widget.dart';
 import 'package:easy_shopper/views/widgets/recommended_product_widget.dart';
+
 import 'package:easy_shopper/views/widgets/shopping_cart_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../../controller/product_bloc/products_bloc.dart';
-import 'profile_page.dart';
-import 'wishlist_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,8 +19,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- 
-
   @override
   void initState() {
     super.initState();
@@ -30,7 +27,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -50,8 +46,20 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           Container(
-            margin: const EdgeInsets.only(right: 40),
+            margin: const EdgeInsets.only(right: 20),
             child: const ShoppingCartWidget(),
+          ),
+          Container(
+             margin: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              tooltip: 'Previous Orders',
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return const OrderHistoryPage();
+                  }));
+                },
+                icon: Icon(Icons.history_outlined)),
           )
         ],
       ),
@@ -78,20 +86,34 @@ class _HomePageState extends State<HomePage> {
                 SizedBox(
                   width: 350,
                   height: 48,
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Search...',
-                      prefixIcon: const Icon(Icons.search_outlined),
-                      contentPadding: const EdgeInsets.all(10.0),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6.0),
-                        borderSide: const BorderSide(color: Color(0xffD2D3D3)),
+                  child: SearchBar(
+                    leading: const Icon(Icons.search_outlined),
+                    elevation: const WidgetStatePropertyAll(0),
+                    shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: Color(0xffD2D3D3),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        borderSide: const BorderSide(color: Colors.grey),
-                      ),
-                    ),
+                      borderRadius: BorderRadius.circular(6.0),
+                    )),
+                    backgroundColor:
+                        const WidgetStatePropertyAll(Colors.transparent),
+                    hintText: 'Search products',
+                    keyboardType: TextInputType.text,
+
+                    // decoration: InputDecoration(
+
+                    //   hintText: 'Search...',
+                    //   prefixIcon: const Icon(Icons.search_outlined),
+                    //   contentPadding: const EdgeInsets.all(10.0),
+                    //   border: OutlineInputBorder(
+                    //     borderRadius: BorderRadius.circular(6.0),
+                    //     borderSide: const BorderSide(color: Color(0xffD2D3D3)),
+                    //   ),
+                    //   enabledBorder: OutlineInputBorder(
+                    //     borderRadius: BorderRadius.circular(10.0),
+                    //     borderSide: const BorderSide(color: Colors.grey),
+                    //   ),
+                    // ),
                   ),
                 ),
                 const SizedBox(
@@ -113,7 +135,9 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                           width: 20,
                           child: IconButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                   //   await HydratedBloc.storage.clear(); 
+                              },
                               icon: const Icon(
                                 Icons.arrow_back_ios,
                                 size: 20,
@@ -162,7 +186,13 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return const AllproductsPage();
+                            },
+                          ));
+                        },
                         child: const Text(
                           'View all',
                           style: TextStyle(
@@ -220,7 +250,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-     
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:easy_shopper/controller/product_bloc/products_bloc.dart';
+import 'package:easy_shopper/views/pages/checkout_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -83,6 +84,12 @@ class ShoppingCartActive extends StatelessWidget {
                         Image.network(
                           fit: BoxFit.contain,
                           'https://api.timbu.cloud/images/${items[index].imageUrl}',
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Placeholder(
+                              fallbackWidth: 87,
+                              fallbackHeight: 100,
+                            );
+                          },
                           width: 87,
                           height: 100,
                         ),
@@ -163,9 +170,10 @@ class ShoppingCartActive extends StatelessWidget {
                             ),
                             Text(
                               NumberFormat.currency(
-                                      locale: 'en_NG', symbol: '₦')
+                                      locale: 'en_US', symbol: '\$')
                                   .format(
-                                      double.parse(items[index].currentPrice!)),
+                              (  double.parse(items[index].currentPrice!) / 1000),
+                              ),
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                             const SizedBox(
@@ -220,8 +228,8 @@ class ShoppingCartActive extends StatelessWidget {
                       width: 60,
                     ),
                     Text(
-                      NumberFormat.currency(locale: 'en_NG', symbol: '₦')
-                          .format(totalPrice),
+                      NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                          .format(totalPrice / 1000),
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: const Color(0xff6E6E6E),
                             fontSize: 16,
@@ -248,7 +256,7 @@ class ShoppingCartActive extends StatelessWidget {
                       width: 60,
                     ),
                     Text(
-                      '₦5,000.00',
+                      '\$5.00',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: const Color(0xff6E6E6E),
                             fontSize: 16,
@@ -277,7 +285,7 @@ class ShoppingCartActive extends StatelessWidget {
                         context.read<CartBloc>().add(ClearCart());
                       },
                       child: Container(
-                          width: 63,
+                          width: 70,
                           height: 48,
                           padding: const EdgeInsets.symmetric(horizontal: 8),
                           decoration: BoxDecoration(
@@ -312,8 +320,8 @@ class ShoppingCartActive extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          NumberFormat.currency(locale: 'en_NG', symbol: '₦')
-                              .format((totalPrice + 5000)),
+                          NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                              .format((totalPrice / 1000 + 5)),
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium!
@@ -325,20 +333,29 @@ class ShoppingCartActive extends StatelessWidget {
                     const SizedBox(
                       width: 40,
                     ),
-                    Container(
-                      width: 95,
-                      height: 48,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6),
-                          color: Color(0xff408C2B)),
-                      child: const Center(
-                        child: Text(
-                          'Checkout',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
-                              fontFamily: 'Poppins',
-                              color: Color(0xffFAFAFA)),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return CheckOutPage();
+                          },
+                        ));
+                      },
+                      child: Container(
+                        width: 95,
+                        height: 48,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: Color(0xff408C2B)),
+                        child: const Center(
+                          child: Text(
+                            'Checkout',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Poppins',
+                                color: Color(0xffFAFAFA)),
+                          ),
                         ),
                       ),
                     ),
@@ -526,9 +543,11 @@ class ShoppingCartEmpty extends StatelessWidget {
                 Align(
                   alignment: Alignment.centerLeft,
                   child: SizedBox(
-                      height: 200,
-                      child: ProductItemWidget(
-                          productIndex: 0, items: [recentlyViewedItem])),
+                    height: 200,
+                    child: ProductItemWidget(
+                      item: recentlyViewedItem,
+                    ),
+                  ),
                 )
               ],
             ),

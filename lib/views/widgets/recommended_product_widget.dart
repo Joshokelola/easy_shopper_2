@@ -37,11 +37,12 @@ class _RecommendedItemsWidgetState extends State<RecommendedItemsWidget> {
             height: 230,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: state.product.sublist(0, 3).length,
+              itemCount: 3,
               itemBuilder: (context, index) {
+                var randomProducts = state.product.sublist(5, 10);
+                // randomProducts.shuffle();
                 return ProductItemWidget(
-                  productIndex: index,
-                  items: state.product.sublist(0, 3),
+                  item: randomProducts[index],
                 );
               },
             ),
