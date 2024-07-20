@@ -1,3 +1,5 @@
+import 'package:checkout_screen_ui/checkout_ui.dart';
+import 'package:easy_shopper/views/pages/checkout_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -5,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:easy_shopper/views/widgets/shopping_cart_widget.dart';
 
 import '../../controller/cart_bloc/bloc/cart_bloc.dart';
+import '../../controller/product_bloc/products_bloc.dart';
 import '../../model/t_product.dart';
 
 enum ProductDetailsState { Initial, AddedToCart }
@@ -48,7 +51,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         ],
       ),
       body: _buildContent(widget.item),
-      bottomNavigationBar: _buildBottomBar(widget.item),
+      bottomNavigationBar: _buildBottomBarWithBlocListener(widget.item),
     );
   }
 
@@ -89,8 +92,6 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Poppins'),
               ),
-
-              
             ],
           ),
         ),
@@ -140,7 +141,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             children: [
               Text(
                 NumberFormat.currency(locale: 'en_US', symbol: '\$').format(
-                (  double.parse(product.currentPrice!)) / 1000,
+                  (double.parse(product.currentPrice!)) / 1000,
                 ),
                 style: Theme.of(context)
                     .textTheme
@@ -177,6 +178,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             ],
           ),
         );
+
       case ProductDetailsState.AddedToCart:
         return Container(
           height: 94,
@@ -219,10 +221,9 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     ),
                   ),
                   Text(
-                 NumberFormat.currency(
-                                      locale: 'en_US', symbol: '\$')
-                                  .format(
-                              (  double.parse(product.currentPrice!) / 1000),),
+                    NumberFormat.currency(locale: 'en_US', symbol: '\$').format(
+                      (double.parse(product.currentPrice!) / 1000),
+                    ),
                     style: Theme.of(context)
                         .textTheme
                         .titleMedium!
@@ -233,28 +234,202 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               const SizedBox(
                 width: 40,
               ),
-              Container(
-                width: 115,
-                height: 48,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Color(0xff408C2B)),
-                child: const Center(
-                  child: Text(
-                    'Checkout',
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                        fontFamily: 'Poppins',
-                        color: Color(0xffFAFAFA)),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) {
+                      return const CheckOutPage();
+                    },
+                  ));
+                },
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return const CheckOutPage();
+                    }));
+                  },
+                  child: Container(
+                    width: 115,
+                    height: 48,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6),
+                        color: Color(0xff408C2B)),
+                    child: const Center(
+                      child: Text(
+                        'Checkout',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Poppins',
+                            color: Color(0xffFAFAFA)),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ],
           ),
         );
+
       default:
         return Container();
     }
+  }
+
+  Widget _buildBottomBarWithBlocListener(Items product) {
+    return BlocBuilder<CartBloc, CartState>(
+      builder: (context, state) {
+        if (state is CartLoaded) {
+          var isItemInCart = state.items.contains(product);
+          return !isItemInCart
+              ? Container(
+                  height: 80,
+                  //width: double.maxFinite,
+                  padding: const EdgeInsets.only(left: 40, right: 40),
+                  color: const Color(0xff408C2B),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                            .format(
+                          (double.parse(product.currentPrice!)) / 1000,
+                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium!
+                            .copyWith(
+                                color: const Color(0xffFAFAFA), fontSize: 18),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          context.read<CartBloc>().add(AddItem(product));
+                          setState(() {
+                            _state = ProductDetailsState.AddedToCart;
+                          });
+                        },
+                        child: Container(
+                          width: 152,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(2.366),
+                            border: Border.all(
+                              color: const Color(0xffFFFFFF),
+                            ),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Add to cart',
+                              style: TextStyle(
+                                  fontSize: 11.45,
+                                  fontFamily: 'Poppins',
+                                  color: Color(0xffFAFAFA)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container(
+                  height: 94,
+                  decoration: const BoxDecoration(color: Color(0xffE4F5E0)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          context.read<CartBloc>().add(RemoveItem(product));
+                          setState(() {
+                            _state = ProductDetailsState.Initial;
+                          });
+                        },
+                        child: Container(
+                            width: 63,
+                            height: 48,
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: const Color(0xff363939)),
+                                borderRadius: BorderRadius.circular(4)),
+                            child: const Align(
+                                alignment: Alignment.center,
+                                child: const Text('Cancel'))),
+                      ),
+                      const SizedBox(
+                        width: 40,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Unit Price',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff797A7B),
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.currency(locale: 'en_US', symbol: '\$')
+                                .format(
+                              (double.parse(product.currentPrice!) / 1000),
+                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                    color: const Color(0xff363939),
+                                    fontSize: 18),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        width: 40,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) {
+                              return const CheckOutPage();
+                            },
+                          ));
+                        },
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(MaterialPageRoute(builder: (context) {
+                              return const CheckOutPage();
+                            }));
+                          },
+                          child: Container(
+                            width: 115,
+                            height: 48,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color: Color(0xff408C2B)),
+                            child: const Center(
+                              child: Text(
+                                'Checkout',
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'Poppins',
+                                    color: Color(0xffFAFAFA)),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+        }
+        return Container();
+      },
+    );
   }
 }
