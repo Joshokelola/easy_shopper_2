@@ -1,4 +1,5 @@
 import 'package:easy_shopper/controller/product_bloc/products_bloc.dart';
+import 'package:easy_shopper/main.dart';
 import 'package:easy_shopper/views/pages/checkout_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -172,7 +173,8 @@ class ShoppingCartActive extends StatelessWidget {
                               NumberFormat.currency(
                                       locale: 'en_US', symbol: '\$')
                                   .format(
-                              (  double.parse(items[index].currentPrice!) / 1000),
+                                (double.parse(items[index].currentPrice!) /
+                                    1000),
                               ),
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
@@ -256,7 +258,7 @@ class ShoppingCartActive extends StatelessWidget {
                       width: 60,
                     ),
                     Text(
-                      '\$5.00',
+                      '\$15.00',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: const Color(0xff6E6E6E),
                             fontSize: 16,
@@ -321,7 +323,7 @@ class ShoppingCartActive extends StatelessWidget {
                         ),
                         Text(
                           NumberFormat.currency(locale: 'en_US', symbol: '\$')
-                              .format((totalPrice / 1000 + 5)),
+                              .format((totalPrice / 1000 + 15)),
                           style: Theme.of(context)
                               .textTheme
                               .titleMedium!
@@ -481,7 +483,12 @@ class ShoppingCartEmpty extends StatelessWidget {
               width: 160,
               height: 48,
               child: FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) {
+                    return const MyApp();
+                  }));
+                },
                 style: const ButtonStyle(
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(
@@ -491,11 +498,13 @@ class ShoppingCartEmpty extends StatelessWidget {
                       ),
                     ),
                     backgroundColor: WidgetStatePropertyAll(Color(0xff408C2B))),
-                child: const Text('Start shopping',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500)),
+                child: const Text(
+                  'Start shopping',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w500),
+                ),
               ),
             ),
           ),
