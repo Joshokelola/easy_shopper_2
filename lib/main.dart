@@ -1,4 +1,3 @@
-
 import 'package:easy_shopper/controller/cubit/order_item_cubit.dart';
 import 'package:easy_shopper/controller/internetConnectionChecker/bloc/internet_connection_checker_bloc.dart';
 import 'package:easy_shopper/controller/mockPayment/bloc/mock_payment_bloc.dart';
@@ -6,6 +5,7 @@ import 'package:easy_shopper/controller/cart_bloc/bloc/cart_bloc.dart';
 import 'package:easy_shopper/controller/product_bloc/bloc_observer.dart';
 import 'package:easy_shopper/controller/product_bloc/products_bloc.dart';
 import 'package:easy_shopper/controller/repository/get_product_repo.dart';
+import 'package:easy_shopper/controller/search/bloc/search_product_bloc.dart';
 import 'package:easy_shopper/views/pages/home.dart';
 import 'package:easy_shopper/views/widgets/shopping_cart_widget.dart';
 import 'package:flutter/foundation.dart';
@@ -49,11 +49,13 @@ Future<void> main() async {
       BlocProvider(
         create: (context) => OrderItemCubit(),
       ),
+      BlocProvider(
+          create: (context) => SearchProductBloc(
+              getProductRepoImpl: RepositoryProvider.of(context)))
     ],
     //  create: (context) => GetProductsRepoImpl(),
 
-   child: const MyApp(),
-    
+    child: const MyApp(),
   ));
 }
 
@@ -80,9 +82,8 @@ class _MyAppState extends State<MyApp> {
       const WishlistPage(),
     ];
     return MaterialApp(
-    
       // theme: ThemeData.light(),
-    
+
       title: 'Sharrie\'s Signature',
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
@@ -92,27 +93,29 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: BlocListener<InternetConnectionBloc, InternetConnectionState>(
         listener: (context, state) {
-                  if (state is InternetConnectionDisconnected) {
+          if (state is InternetConnectionDisconnected) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: const Text('No internet connection'),
                 backgroundColor: Colors.red,
-               
               ),
             );
           }
-                  if (state is InternetConnectionConnected) {
+          if (state is InternetConnectionConnected) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
                 content: const Text('internet connection'),
                 backgroundColor: Colors.green,
-               
               ),
             );
           }
         },
         child: Scaffold(
-          body: pages[_selectedIndex],
+          body: Builder(
+            builder: (context) {
+              return pages[_selectedIndex];
+            }
+          ),
           bottomNavigationBar: BottomNavigationBar(
             items: const [
               BottomNavigationBarItem(
