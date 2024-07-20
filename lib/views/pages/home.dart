@@ -1,5 +1,6 @@
 import 'package:easy_shopper/views/pages/allproducts_page.dart';
 import 'package:easy_shopper/views/pages/order_history_page.dart';
+import 'package:easy_shopper/views/pages/search_delegate.dart';
 import 'package:easy_shopper/views/widgets/collections_widget.dart';
 import 'package:easy_shopper/views/widgets/deals_widget.dart';
 import 'package:easy_shopper/views/widgets/recommended_product_widget.dart';
@@ -7,7 +8,7 @@ import 'package:easy_shopper/views/widgets/recommended_product_widget.dart';
 import 'package:easy_shopper/views/widgets/shopping_cart_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
+
 
 import '../../controller/product_bloc/products_bloc.dart';
 
@@ -27,6 +28,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+   
+    final searchController = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -50,9 +53,9 @@ class _HomePageState extends State<HomePage> {
             child: const ShoppingCartWidget(),
           ),
           Container(
-             margin: const EdgeInsets.only(right: 20),
+            margin: const EdgeInsets.only(right: 20),
             child: IconButton(
-              tooltip: 'Previous Orders',
+                tooltip: 'Previous Orders',
                 onPressed: () {
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
@@ -87,6 +90,7 @@ class _HomePageState extends State<HomePage> {
                   width: 350,
                   height: 48,
                   child: SearchBar(
+                    controller: searchController,
                     leading: const Icon(Icons.search_outlined),
                     elevation: const WidgetStatePropertyAll(0),
                     shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -99,6 +103,14 @@ class _HomePageState extends State<HomePage> {
                         const WidgetStatePropertyAll(Colors.transparent),
                     hintText: 'Search products',
                     keyboardType: TextInputType.text,
+                    onSubmitted: (query) {
+                      showSearch(
+                          context: context,
+                          query: query,
+                          delegate: ProductSearchDelegate());
+                      // setState(() {});
+                      searchController.clear();
+                    },
 
                     // decoration: InputDecoration(
 
@@ -119,53 +131,13 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 40,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Just for you',
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Color(0xff363939),
-                          fontWeight: FontWeight.w600,
-                          fontFamily: 'Lora'),
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 20,
-                          child: IconButton(
-                              onPressed: () async {
-                                   //   await HydratedBloc.storage.clear(); 
-                              },
-                              icon: const Icon(
-                                Icons.arrow_back_ios,
-                                size: 20,
-                                color: Color(0xffD2D3D3),
-                              )),
-                        ),
-                        SizedBox(
-                          width: 20,
-                          child: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.arrow_forward_ios,
-                                size: 20,
-                              )),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
               ],
             ),
           ),
           Container(
-              margin: const EdgeInsets.only(left: 40),
-              child: const RecommendedItemsWidget()),
+            margin: const EdgeInsets.only(left: 40),
+            child: const RecommendedItemsWidget(),
+          ),
           const SizedBox(
             height: 40,
           ),
