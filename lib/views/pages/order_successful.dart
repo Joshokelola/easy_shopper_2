@@ -49,17 +49,48 @@ class OrderSuccessful extends StatelessWidget {
                 const Text(
                   'Your order has been placed successfully.',
                 ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).popUntil((route) => route.isFirst);
+                // TextButton(
+                //     onPressed: () {
+                //       Navigator.of(context).popUntil((route) => route.isFirst);
+                //       Navigator.of(context).pushAndRemoveUntil(
+                //         MaterialPageRoute(
+                //           builder: (context) => const MyApp(),
+                //         ),
+                //         (route) => false,
+                //       );
+                //     },
+                //     child: const Text('Back to shopping'))
+                 const SizedBox(
+              height: 15,
+            ),
+               InkWell(
+                      onTap: () {
+                            Navigator.of(context).popUntil((route) => route.isFirst);
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (context) => const MyApp(),
                         ),
                         (route) => false,
                       );
-                    },
-                    child: const Text('Back to shopping'))
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 48,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6),
+                            color: Color(0xff408C2B)),
+                        child: const Center(
+                          child: Text(
+                            'Back to shopping',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                fontFamily: 'Poppins',
+                                color: Color(0xffFAFAFA)),
+                          ),
+                        ),
+                      ),
+                    ),
               ],
             ),
           ],
