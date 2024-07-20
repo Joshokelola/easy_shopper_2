@@ -106,14 +106,14 @@ class OrderDetailWidget extends StatelessWidget {
           style: const TextStyle(
               fontSize: 18,
               color: Color(0xff0A0B0A),
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.bold,
               fontFamily: 'Poppins'),
         ),
         Text(
           orderDetail,
           style: const TextStyle(
               fontSize: 18,
-              color: Color(0xff0A0B0A),
+              color: Color(0xff6E6E6E),
               fontWeight: FontWeight.w400,
               fontFamily: 'Poppins'),
         ),
