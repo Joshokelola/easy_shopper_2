@@ -19,7 +19,7 @@ Here are some screenshots of the application:
 <img src="screenshots/screenshot_5.png" width="240">
 <img src="screenshots/screenshot_6.png" width="240">
 <img src="screenshots/screenshot_7.png" width="240">
-<img src="scrennshots/screenshot_8.png" width="240">
+<img src="screenshots/scrennshot_8.png" width="240">
 
 
 ## Download
